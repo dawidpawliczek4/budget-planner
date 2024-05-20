@@ -1,4 +1,5 @@
 # Budget Management Application
+Project created as part of the Object Oriented Programming course at the University of Wrocław
 
 ## Overview
 

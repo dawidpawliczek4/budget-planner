@@ -1,21 +1,37 @@
 import java.util.List;
 import java.util.Scanner;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
-    private static Budget budget;
+    private static final UserManager userManager = new UserManager();
+    private static User user;
 
     public static void main(String[] args) {
-        String filepath = "budget.ser";
-        budget = loadBudgetFromFile(filepath);
-        if (budget == null) {
-            budget = new Budget();
+        boolean notLogged = true;
+        while (notLogged) {
+            System.out.println("1. Zaloguj\n2. Zarejestruj\n3. Wyjście");
+            System.out.println("Wybierz opcję: ");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    user = login();
+                    if (user == null) {
+                        System.out.println("Niepoprawne dane logowania");
+                        break;
+                    }
+                    notLogged = false;
+                    break;
+                case 2:
+                    register();
+                    notLogged = false;
+                    break;
+                case 3:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Niepoprawna opcja");
+                    break;
+            }
         }
         boolean run = true;
         while (run) {
@@ -41,10 +57,9 @@ public class Main {
                     showTransactions();
                     break;
                 case 4:
-                    System.out.println("Suma wydatków: " + budget.getExpenseTotal());
+                    System.out.println("Suma wydatków: " + user.budget.getExpenseTotal());
                     break;
                 case 5:
-                    saveBudgetToFile(budget, filepath);
                     run = false;
                     break;
                 case 6:
@@ -57,6 +72,30 @@ public class Main {
 
             }
         }
+
+        save();
+    }
+
+    private static void save() {
+        userManager.saveUserBudgetToFile(user);
+        userManager.saveUsersToFile();
+    }
+
+
+    private static User login() {
+        System.out.println("Podaj login: ");
+        String login = scanner.next();
+        System.out.println("Podaj hasło: ");
+        String password = scanner.next();
+        return userManager.login(login, password);
+    }
+
+    private static void register() {
+        System.out.println("Podaj login: ");
+        String login = scanner.next();
+        System.out.println("Podaj hasło: ");
+        String password = scanner.next();
+        user = userManager.addUser(login, password);
     }
 
     private static void dodajTransakcjeUI() {
@@ -90,20 +129,20 @@ public class Main {
         String person = scanner.next();
         if (type.equals("expense")) {
             Expense expense = new Expense(amount, category, subcategory, description, location, person);
-            budget.addExpense(expense);
+            user.budget.addExpense(expense);
         } else {
             Income income = new Income(amount, category, subcategory, description, location, person);
-            budget.addIncome(income);
+            user.budget.addIncome(income);
         }
     }
 
     private static void showTransactions() {
         System.out.println("Wydatki: ");
-        for (Expense expense : budget.getExpenses()) {
+        for (Expense expense : user.budget.getExpenses()) {
             System.out.println(expense);
         }
         System.out.println("Przychody: ");
-        for (Income income : budget.getIncomes()) {
+        for (Income income : user.budget.getIncomes()) {
             System.out.println(income);
         }
     }
@@ -114,42 +153,22 @@ public class Main {
         Expense expense3 = new Expense(300, "jedzenie", "obiad", "obiad w restauracji", "restauracja 2", "żona");
         Income income1 = new Income(1000, "wynagrodzenie", "pensja", "pensja za styczeń", "praca", "firma");
         Income income2 = new Income(2000, "wynagrodzenie", "pensja", "pensja za luty", "praca", "firma");
-        budget.addExpense(expense1);
-        budget.addExpense(expense2);
-        budget.addExpense(expense3);
-        budget.addIncome(income1);
-        budget.addIncome(income2);
+        user.budget.addExpense(expense1);
+        user.budget.addExpense(expense2);
+        user.budget.addExpense(expense3);
+        user.budget.addIncome(income1);
+        user.budget.addIncome(income2);
     }
 
     private static void deleteTransaction() {
-        List<Transaction> transactions = budget.getAllTransactions();
+        List<Transaction> transactions = user.budget.getAllTransactions();
         System.out.println("Wybierz którą transakcję chcesz usunąć:");
         for (int i = 0; i < transactions.size(); i++) {
             System.out.println(i + 1 + ". " + transactions.get(i));
         }
         int index = scanner.nextInt();
-        budget.removeTransaction(transactions.get(index-1));
+        user.budget.removeTransaction(transactions.get(index-1));
         System.out.println("Usnięto transakcję");
     }
 
-    public static void saveBudgetToFile(Budget budget, String filepath) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filepath))) {
-            oos.writeObject(budget);
-            System.out.println("Zapisano budżet do pliku");
-        } catch (IOException e) {
-            System.err.println("Błąd zapisu do pliku");
-        }
-    }
-
-    public static Budget loadBudgetFromFile(String filepath) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filepath))) {
-            return (Budget) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Błąd odczytu z pliku");
-
-            return null;
-        }
-    }
-
 }
-

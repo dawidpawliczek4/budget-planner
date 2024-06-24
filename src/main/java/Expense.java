@@ -14,12 +14,11 @@ public class Expense extends Transaction implements Serializable {
                 ", date=" + getDate() +
                 ", amount=" + getAmount() +
                 ", category='" + getCategory() + '\'' +
-                ", subcategory='" + getSubcategory() + '\'' +
                 '}';
     }
 
-    public Expense(double amount, String category, String subcategory, String description, String location, String payee) {
-        super(amount, category, subcategory);
+    public Expense(double amount, Category category, String description, String location, String payee) {
+        super(amount, category);
         this.description = description;
         this.location = location;
         this.payee = payee;

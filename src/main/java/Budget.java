@@ -22,6 +22,14 @@ public class Budget implements Serializable {
         return total;
     }
 
+    public double getIncomeTotal () {
+        double total = 0;
+        for (Income income : incomes) {
+            total += income.getAmount();
+        }
+        return total;
+    }
+
     public List<Transaction> getAllTransactions() {
         List<Transaction> transactions = new ArrayList<>();
         transactions.addAll(expenses);

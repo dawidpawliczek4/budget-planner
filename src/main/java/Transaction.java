@@ -5,8 +5,7 @@ public class Transaction implements Serializable {
     private Date date;
     private double amount;
     //    private String account;
-    private String category;
-    private String subcategory;
+    private Category category;
 
     @Override
     public String toString() {
@@ -14,15 +13,13 @@ public class Transaction implements Serializable {
                 "date=" + date +
                 ", amount=" + amount +
                 ", category='" + category + '\'' +
-                ", subcategory='" + subcategory + '\'' +
                 '}';
     }
 
-    public Transaction(double amount, String category, String subcategory) {
+    public Transaction(double amount, Category category) {
         this.date = new Date();
         this.amount = amount;
         this.category = category;
-        this.subcategory = subcategory;
     }
 
     public Date getDate() {
@@ -34,11 +31,8 @@ public class Transaction implements Serializable {
     }
 
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public String getSubcategory() {
-        return subcategory;
-    }
 }

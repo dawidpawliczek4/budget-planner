@@ -6,6 +6,8 @@ public class User implements Serializable {
     protected Budget budget;
     private String filepath;
 
+    protected CategoryManager categoryManager = new CategoryManager();
+
     public User(String login, String password) {
         this.login = login;
         this.password = password;
@@ -28,4 +30,5 @@ public class User implements Serializable {
     public String getFilepath() {
         return filepath;
     }
+
 }

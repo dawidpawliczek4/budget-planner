@@ -5,8 +5,8 @@ public class Income extends Transaction implements Serializable {
     private String location;
     private String payer;
 
-    public Income(double amount, String category, String subcategory, String description, String location, String payer) {
-        super(amount, category, subcategory);
+    public Income(double amount, Category category, String description, String location, String payer) {
+        super(amount, category);
         this.description = description;
         this.location = location;
         this.payer = payer;

@@ -31,10 +31,15 @@ public class CategoryManager implements Serializable {
         return null;
     }
 
-    public void removeCategory(String category) {
+    public void removeCategory(String category, Budget budget) {
         for (Category c : categories) {
             if (c.getName().equals(category.toLowerCase())) {
                 categories.remove(c);
+                for (Transaction t : budget.getAllTransactions()) {
+                    if (t.getCategory().getName().equals(category.toLowerCase())) {
+                        budget.removeTransaction(t);
+                    }
+                }
                 break;
             }
         }

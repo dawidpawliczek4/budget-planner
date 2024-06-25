@@ -5,6 +5,18 @@ public class Income extends Transaction implements Serializable {
     private String location;
     private String payer;
 
+    @Override
+    public String toString() {
+        return "Income{" +
+                "description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", payer='" + payer + '\'' +
+                ", date=" + getDate() +
+                ", amount=" + getAmount() +
+                ", category='" + getCategory() + '\'' +
+                '}';
+    }
+
     public Income(double amount, Category category, String description, String location, String payer) {
         super(amount, category);
         this.description = description;

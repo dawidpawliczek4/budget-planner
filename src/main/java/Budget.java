@@ -53,4 +53,9 @@ public class Budget implements Serializable {
         }
     }
 
+    public void removeAllTransactions() {
+        expenses.clear();
+        incomes.clear();
+    }
+
 }

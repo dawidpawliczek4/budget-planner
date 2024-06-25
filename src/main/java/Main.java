@@ -5,7 +5,7 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final UserManager userManager = new UserManager();
     private static User user;
-    private static CsvExporter csvExporter = new CsvExporter();
+    private static CsvManager csvManager = new CsvManager();
 
     public static void main(String[] args) {
         boolean notLogged = true;
@@ -50,12 +50,13 @@ public class Main {
                     9. Wyjście
                     10. Dodaj demo transakcje
                     11. Eksportuj do pliku CSV
+                    12. Importuj z pliku CSV
                     """);
             System.out.println("Wybierz opcję: ");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 0:
-                    System.out.println("1. Dodaj kategorię\n2. Usuń kategorię");
+                    System.out.println("1. Dodaj kategorię\n2. Usuń kategorię\n3. Pokaż wszystkie kategorie\n4. Wyjście");
                     System.out.println("Wybierz opcję: ");
                     int categoryChoice = scanner.nextInt();
                     switch (categoryChoice) {
@@ -69,7 +70,12 @@ public class Main {
                         case 2:
                             System.out.println("Podaj nazwę kategorii: ");
                             String categoryToRemove = scanner.next();
-                            user.categoryManager.removeCategory(categoryToRemove);
+                            user.categoryManager.removeCategory(categoryToRemove, user.budget);
+                            break;
+                        case 3:
+                            user.categoryManager.getCategories().forEach(System.out::println);
+                            break;
+                        case 4:
                             break;
                         default:
                             System.out.println("Niepoprawna opcja");
@@ -118,6 +124,9 @@ public class Main {
                     break;
                 case 11:
                     exportToCsv();
+                    break;
+                case 12:
+                    importFromCsv();
                     break;
                 default:
                     System.out.println("Niezaimplementowane");
@@ -246,8 +255,15 @@ public class Main {
         System.out.println("Podaj ścieżkę do pliku: ");
         String filePath = scanner.next();
         List<Transaction> transactions = user.budget.getAllTransactions();
-        csvExporter.exportTransactionsToCsv(transactions, filePath);
+        csvManager.exportTransactionsToCsv(transactions, filePath);
         System.out.println("Dane zostały wyeksportowane do pliku: " + filePath);
+    }
+
+    private static void importFromCsv() {
+        System.out.println("Podaj ścieżkę do pliku: ");
+        String filePath = scanner.next();
+        csvManager.importTransactionsFromCsv(filePath, user);
+        System.out.println("Dane zostały zaimportowane z pliku: " + filePath);
     }
 
 }
